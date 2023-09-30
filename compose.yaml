@@ -1,0 +1,14 @@
+version: '3.8'
+
+services:
+  app:
+    build: Dockerfile
+    container_name: my_app_container
+    command: gunicorn -w 1 -k uvicorn.workers.UvicornWorker -b 0.0.0.0:8000 main:app
+    ports:
+      - "8000:8000"
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
