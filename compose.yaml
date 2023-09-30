@@ -1,14 +1,45 @@
 version: '3.8'
 
 services:
-  app:
+  fastapi-no1:
     build: .
-    container_name: fastapi
+    container_name: fastapi-container-1
     command: gunicorn -w 1 -k uvicorn.workers.UvicornWorker -b 0.0.0.0:8000 main:app
-    ports:
-      - "8000:8000"
+    environment:
+      - TITLE=fastapiコンテナ
+      - DESCRIPTION=コンテナ一号機
+      - VERSION=1.0.0
+      - OPENAPI_URL=/1/openapi.json
+      - DOCS_URL=/1/docs
+      - PREFIX_URL=/1
     logging:
       driver: "json-file"
       options:
         max-size: "10m"
-        max-file: "3"
+
+  fastapi-no2:
+    build: .
+    container_name: fastapi-container-2
+    command: gunicorn -w 1 -k uvicorn.workers.UvicornWorker -b 0.0.0.0:8000 main:app
+    environment:
+      - TITLE=fastapiコンテナ
+      - DESCRIPTION=コンテナ二号機
+      - VERSION=1.0.0
+      - OPENAPI_URL=/2/openapi.json
+      - DOCS_URL=/2/docs
+      - PREFIX_URL=/2
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+
+  nginx:
+    image: nginx:latest
+    container_name: nginx
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - fastapi-no1
+      - fastapi-no2
