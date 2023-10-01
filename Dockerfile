@@ -19,4 +19,4 @@ RUN poetry config virtualenvs.create false
 # git cloneで指定したブランチをチェックアウトする
 RUN git clone -b develop https://github.com/goegoe0212/fastapi-poetry.git .
 
-RUN poetry install
+RUN poetry install --no-dev
